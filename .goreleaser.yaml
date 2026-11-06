@@ -1,0 +1,40 @@
+version: 2
+
+project_name: vphone-apps
+
+builds:
+  - main: ./cmd/vphone-apps
+    binary: vphone-apps
+    goos: [darwin]
+    goarch: [arm64]
+    env: [CGO_ENABLED=1]
+    flags: [-trimpath]
+    ldflags: [-s -w]
+
+archives:
+  - formats: [tar.gz]
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    files: [LICENSE, NOTICE, README.md]
+
+checksum:
+  name_template: checksums.txt
+
+changelog:
+  use: github
+
+release:
+  replace_existing_artifacts: true
+
+homebrew_casks:
+  - name: vphone-apps
+    repository:
+      owner: securityvoid
+      name: homebrew-tap
+      token: "{{ .Env.HOMEBREW_TAP_TOKEN }}"
+    homepage: https://github.com/securityvoid/vphone-apps
+    description: Install App Store apps on a vphone virtual iPhone in one command
+    binaries: [vphone-apps]
+    hooks:
+      post:
+        install_steps: |
+          run "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "{{ .StagedPath }}/vphone-apps"]

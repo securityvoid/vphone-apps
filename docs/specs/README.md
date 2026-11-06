@@ -7,6 +7,7 @@
 | [pipeline/](pipeline/) | `login`, `search`, `install`: App Store to running VM |
 | [setup/](setup/) | `setup` (one-time unfairplay enrollment, also run automatically after `login` using Organic Maps as the throwaway enrollment app) and `doctor` (preflight) |
 | [attribution/](attribution/) | Credit to the upstream projects: LICENSE, NOTICE (inspiration credit, fork note), `--licenses` |
+| [release/](release/) | Tag-driven GitHub Release and Homebrew tap (macOS arm64 only) |
 
 ## Shared definitions (owned here, cited by the leaves)
 

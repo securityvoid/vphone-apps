@@ -63,6 +63,16 @@ installed: app.organicmaps
 launched: app.organicmaps pid 1234
 ```
 
+## Install
+
+Only macOS on Apple Silicon (arm64) is supported, because vphone-cli runs on Apple Silicon Macs only.
+
+```
+brew install securityvoid/tap/vphone-apps
+```
+
+Or download the `darwin_arm64` archive from the [releases](https://github.com/securityvoid/vphone-apps/releases) page and put `vphone-apps` on your `PATH`.
+
 ## Build
 
 Supported platform: macOS on Apple Silicon (arm64) only. Needs Go 1.26.5 with cgo (Xcode command line tools).
