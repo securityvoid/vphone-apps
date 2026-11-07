@@ -3,7 +3,7 @@ module github.com/securityvoid/vphone-apps
 go 1.26.5
 
 require (
-	github.com/DrWhax/unfairplay v0.0.0-00010101000000-000000000000
+	github.com/DrWhax/unfairplay v0.2.1
 	github.com/byteness/keyring v1.9.0
 	github.com/juju/persistent-cookiejar v1.0.0
 	github.com/majd/ipatool/v2 v2.7.1-0.20261025002001-d9c0247daea5
@@ -74,7 +74,3 @@ require (
 	gopkg.in/errgo.v1 v1.0.1 // indirect
 	gopkg.in/retry.v1 v1.0.3 // indirect
 )
-
-// Points at the fork carrying DrWhax/unfairplay PR #28 (exposes decrypt and setup as importable
-// packages); remove this replace once the PR merges.
-replace github.com/DrWhax/unfairplay => github.com/securityvoid/unfairplay v0.0.0-20261105211136-a2e3b472bf43

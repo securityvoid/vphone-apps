@@ -11,7 +11,7 @@ Files: `cmd/vphone-apps/setup.go`, `cmd/vphone-apps/autosetup.go`, `cmd/vphone-a
 | `setup` | `--app` and `--ipa` (both or neither; neither = auto-setup), `--interface` (default `en0` = `HardwareInterface`), `--keep-work`, `--verbose`, internal `--remove-app`, `--elevated` (not in usage text) | REQ-SETUP-001..003, 007..010 |
 | `doctor` | `--vm <name>` (optional) | REQ-SETUP-004..006 |
 
-`setup.Options`/`Run` are those of `github.com/DrWhax/unfairplay/pkg/setup` (fork): `Options{AppPath, IPAPath, ModelDirectory, HardwareInterface string; KeepWork bool; Progress func(string)}`; `Run(ctx, Options) (Result, error)`; `Result{Summary map[string]any; ModelPath string}`.
+`setup.Options`/`Run` are those of `github.com/DrWhax/unfairplay/pkg/setup` (v0.2.1): `Options{AppPath, IPAPath, ModelDirectory, HardwareInterface string; KeepWork bool; Progress func(string)}`; `Run(ctx, Options) (Result, error)`; `Result{Summary map[string]any; ModelPath string}`.
 
 ### Setup rules
 - Usage errors (exit 2, before elevation): the § Usage text table. A `models.Dir()` failure is `error: setup: <message>`, exit 1. Manual form, before elevating: `--app` a directory ending `.app`, `--ipa` a regular file ending `.ipa`.

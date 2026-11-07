@@ -8,7 +8,7 @@
 - 2026-11-05: "`search APPNAME` and `install APPNAME` that fetch an App Store app and install it on a vphone VM." A separate tool, not a vphone-cli feature.
 - 2026-11-05: "DEPEND ON IPATOOL! THAT IS THE WHOLE FREAKING POINT" — ipatool and unfairplay are imported as Go code, so the user installs no ipatool or unfairplay binary.
 - 2026-11-05: Install through vphoned (`apps.install` over `vphone.sock`), not `ideviceinstaller`.
-- 2026-11-05: Depend on the unfairplay fork until its PR merges, then switch.
+- 2026-11-05: Depend on the unfairplay fork until its PR merges, then switch. 2026-11-07: PR merged; `go.mod` requires upstream v0.2.1.
 
 ## Actors
 - **Operator**: runs the CLI on an Apple Silicon Mac.

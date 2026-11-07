@@ -11,7 +11,7 @@ Inspired by the [Darkwirelabs](https://www.darkwirelabs.com) article, ["From an 
 vphone-apps assembles several open-source tools together to make it easier to install iOS Apps from the AppStore onto a virtualized iPhone running on [vphone-cli](https://github.com/Lakr233/vphone-cli). The hard work was all done by the projects relied upon. vphone-apps is just an interface that makes the process seamless:
 
 - **[ipatool](https://github.com/majd/ipatool)** by Majd Alfhaily, MIT. Provides App Store login, search, license acquisition and IPA download. Used as a Go library. 
-- **[unfairplay](https://github.com/DrWhax/unfairplay)** by DrWhax and contributors, MIT with Apache-2.0 (DarkPhoenix) and MIT (macOSFairFree) components. Provides one-time enrollment and FairPlay decryption of the IPA. A [PR has been submitted to restructure the Go project so that it can be used as a library](https://github.com/DrWhax/unfairplay/pull/28). In the meantime vphone-apps [uses a fork](https://github.com/securityvoid/unfairplay) which implements this PR.
+- **[unfairplay](https://github.com/DrWhax/unfairplay)** by DrWhax and contributors, MIT with Apache-2.0 (DarkPhoenix) and MIT (macOSFairFree) components. Provides one-time enrollment and FairPlay decryption of the IPA.
 - [**organicmaps**](https://github.com/organicmaps/organicmaps) by biodranik, Apache-2.0. Utilized as a sample application to enable unfairplay to decrypt applications. It is added, and cleaned up as part of the setup process.  
 - **[vphone-cli](https://github.com/Lakr233/vphone-cli) and its guest daemon vphoned** by Lakr233, MIT. Provide the virtual iPhone and its install and launch services. Used through the documented `vphone.sock` control protocol.
 

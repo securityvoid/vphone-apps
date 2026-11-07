@@ -29,8 +29,8 @@
   - _Acceptance_: `LICENSE` exists with that copyright line; `NOTICE` contains the `vphone-apps itself is released under the MIT License` sentence, and a `vphone-apps` block with `Copyright (c) 2026 Doug Logan` that precedes the `Direct upstreams` block.
 - **REQ-ATTR-004**: The NOTICE header shall contain the sentence `Inspired by the darkwirelabs.com article at https://www.darkwirelabs.com/articles/from-app-store-to-virtual-iphone-with-vphone/; it is not a dependency.`
   - _Acceptance_: `NOTICE` contains that exact sentence.
-- **REQ-ATTR-005**: `go.mod` shall comment the `replace` line explaining that it points at the fork carrying DrWhax/unfairplay PR #28, and the NOTICE header shall say so in one sentence. This requirement ends once the `replace` is removed (TASK-ATTR-007).
-  - _Acceptance_: the comment precedes the `replace` line; `NOTICE` contains `pull/28`.
+- **REQ-ATTR-005**: `go.mod` shall have no `replace` for github.com/DrWhax/unfairplay, and the NOTICE shall contain no `pull/28` reference.
+  - _Acceptance_: `grep -ci replace go.mod` is 0; `grep -c pull/28 NOTICE internal/notice/NOTICE` is 0 for both.
 
 ## Non-Functional Requirements
 - **NFR-ATTR-001**: No source file copied or adapted from an upstream project shall be present without its original copyright header and an attribution comment naming the source.

@@ -2,6 +2,8 @@ github.com/1Password/connect-sdk-go v1.5.4-0.20250417152128-c154b387248b h1:sVdd
 github.com/1Password/connect-sdk-go v1.5.4-0.20250417152128-c154b387248b/go.mod h1:5rSymY4oIYtS4G3t0oMkGAXBeoYiukV3vkqlnEjIDJs=
 github.com/1password/onepassword-sdk-go v0.4.1-beta.1 h1:b/tt+bAXFXR5f3/irmPAaytfmsN6+5Nj6pbsx5nmKZA=
 github.com/1password/onepassword-sdk-go v0.4.1-beta.1/go.mod h1:j/CbzhucTywjlYrd6SE6k0LcQaFZ2l8OLBsAsOYtvD0=
+github.com/DrWhax/unfairplay v0.2.1 h1:lDtH42RiU7EuNDpXhOqRECWTQ7TbsdoSgcvL8FkIpXc=
+github.com/DrWhax/unfairplay v0.2.1/go.mod h1:E9ytV1+3TIpss73Lff6LiXGvT1kGn7OJnqMrWdnfC9o=
 github.com/HdrHistogram/hdrhistogram-go v1.1.2 h1:5IcZpTvzydCQeHzK4Ef/D5rrSqwxob0t8PQPMybUNFM=
 github.com/HdrHistogram/hdrhistogram-go v1.1.2/go.mod h1:yDgFjdqOqDEKOvasDdhWNXYg9BVp4O+o5f6V/ehm6Oo=
 github.com/VividCortex/ewma v1.2.0 h1:f58SaIzcDXrSy3kWaHNvuJgJ3Nmz59Zji6XoJR/q1ow=
@@ -157,8 +159,6 @@ github.com/rs/zerolog v1.28.0 h1:MirSo27VyNi7RJYP3078AA1+Cyzd2GB66qy3aUHvsWY=
 github.com/rs/zerolog v1.28.0/go.mod h1:NILgTygv/Uej1ra5XxGf82ZFSLk58MFGAUS2o6usyD0=
 github.com/schollz/progressbar/v3 v3.19.1 h1:iv8BgwOvdML/S3p84uBpy/IMigv4U9594vPZYa2EdrU=
 github.com/schollz/progressbar/v3 v3.19.1/go.mod h1:LFL7jqimKxfhero4K1eCkUr/6R39AgQeiPCJtlTWIW8=
-github.com/securityvoid/unfairplay v0.0.0-20261105211136-a2e3b472bf43 h1:2C+HMlHkFbqGDxOj/p/Ams3OOBcqHvMzQFfxvLw6EDI=
-github.com/securityvoid/unfairplay v0.0.0-20261105211136-a2e3b472bf43/go.mod h1:E9ytV1+3TIpss73Lff6LiXGvT1kGn7OJnqMrWdnfC9o=
 github.com/sergi/go-diff v1.0.0/go.mod h1:0CfEIISq7TuYL3j771MWULgwwjU+GofnZX9QAmXWZgo=
 github.com/smartystreets/assertions v1.0.0/go.mod h1:kHHU4qYBaI3q23Pp3VPrmWhuIUrLW/7eUrw0BU5VaoM=
 github.com/smartystreets/go-aws-auth v0.0.0-20180515143844-0c1422d1fdb9/go.mod h1:SnhjPscd9TpLiy1LpzGSKh3bXCfxxXuqd9xmQJy3slM=

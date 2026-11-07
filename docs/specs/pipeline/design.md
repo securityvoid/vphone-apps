@@ -4,7 +4,7 @@
 ## Architecture Overview
 A subcommand dispatcher in `cmd/vphone-apps` calls three small internal packages — `store` (ipatool wiring), `vm` (`vphone.sock` client) and `cache` — plus `models` (model directory). Decryption calls unfairplay `fairplay.DecryptIPA` directly from the install command; it needs no wrapper.
 
-**Stack**: Go 1.26.5, stdlib `flag`, `golang.org/x/term` (no-echo prompts), `github.com/majd/ipatool/v2/pkg/...`, `github.com/DrWhax/unfairplay/pkg/fairplay` (fork, see index).
+**Stack**: Go 1.26.5, stdlib `flag`, `golang.org/x/term` (no-echo prompts), `github.com/majd/ipatool/v2/pkg/...`, `github.com/DrWhax/unfairplay/pkg/fairplay` (upstream v0.2.1, see index).
 **Deployment**: local CLI on the operator's Mac, installed with `go install ./cmd/vphone-apps` or `go build`. No service.
 
 ## System Diagram
@@ -214,4 +214,4 @@ vphone-apps/
 | Retries | none | recovery is re-running; avoids hidden repeat purchases or downloads |
 | Staged guest file | removed by vphoned once `apps.install` was sent, on success and failure; left behind if the run stops between push and install | vphoned's `apps.install` deletes the path in a deferred cleanup |
 | Work file cleanup | per-run subdirectory; `install` deletes `app.ipa` right after a successful decrypt; the directory is always removed (including SIGINT/SIGTERM) unless `--keep` succeeded, when it becomes `kept-*` holding only `app.decrypted.ipa` | simplest rule; isolates concurrent runs; re-running re-downloads |
-| Unfairplay source | fork via `replace`, pinned commit | operator decision; switch after PR #28 merges |
+| Unfairplay source | upstream release v0.2.1 | released importable library API |

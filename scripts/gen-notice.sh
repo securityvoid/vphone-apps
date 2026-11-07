@@ -12,8 +12,8 @@ export LC_ALL=C
 work="$(mktemp -d)"
 trap 'rm -rf "$work"' EXIT
 
-# path<TAB>version<TAB>dir<TAB>replace-path for every linked non-main module (replace target's dir).
-go list -deps -json ./cmd/vphone-apps | jq -r 'select(.Module != null and ((.Module.Main // false) | not)) | .Module | [.Path, (.Replace.Version // .Version), (.Replace.Dir // .Dir // ""), (.Replace.Path // "")] | @tsv' | sort -u > "$work/mods.tsv"
+# path<TAB>version<TAB>dir for every linked non-main module.
+go list -deps -json ./cmd/vphone-apps | jq -r 'select(.Module != null and ((.Module.Main // false) | not)) | .Module | [.Path, (.Replace.Version // .Version), (.Replace.Dir // .Dir // "")] | @tsv' | sort -u > "$work/mods.tsv"
 
 license_file() { # dir -> first LICENSE*/LICENCE*/COPYING* file, case-insensitive
   find "$1" -maxdepth 1 -type f \( -iname 'LICENSE*' -o -iname 'LICENCE*' -o -iname 'COPYING*' -o -iname 'UNLICENSE*' \) | sort | head -n 1
@@ -43,11 +43,6 @@ vphone-apps itself is released under the MIT License (reproduced first below).
 
 Inspired by the darkwirelabs.com article at https://www.darkwirelabs.com/articles/from-app-store-to-virtual-iphone-with-vphone/; it is not a dependency.
 
-unfairplay is built from the fork github.com/securityvoid/unfairplay because
-DrWhax/unfairplay PR #28 (https://github.com/DrWhax/unfairplay/pull/28), which
-exposes its decrypt and setup entry points as importable packages, is not yet
-merged.
-
 ================================================================================
 vphone-apps
 ================================================================================
@@ -70,12 +65,9 @@ HDR
   printf '\n--- ipatool (github.com/majd/ipatool/v2) ---\nRepository: https://github.com/majd/ipatool\nLicense: %s\n\n' "$(license_name "$f")"
   emit_file "$f"
 
-  # unfairplay (the replace target dir; both module paths are named)
-  line="$(awk -F'\t' '$1=="github.com/DrWhax/unfairplay"{print}' "$work/mods.tsv")"
-  d="$(printf '%s' "$line" | cut -f3)"; rp="$(printf '%s' "$line" | cut -f4)"
-  printf '\n--- unfairplay (github.com/DrWhax/unfairplay'
-  if [ -n "$rp" ]; then printf ' => %s' "$rp"; fi
-  printf ') ---\nRepository: https://github.com/DrWhax/unfairplay\nLicense: MIT, with Apache-2.0 (DarkPhoenix) and MIT (macOSFairFree) components\n\n'
+  # unfairplay
+  d="$(awk -F'\t' '$1=="github.com/DrWhax/unfairplay"{print $3}' "$work/mods.tsv")"
+  printf '\n--- unfairplay (github.com/DrWhax/unfairplay) ---\nRepository: https://github.com/DrWhax/unfairplay\nLicense: MIT, with Apache-2.0 (DarkPhoenix) and MIT (macOSFairFree) components\n\n'
   for u in NOTICE LICENSE LICENSE-DARKPHOENIX.txt LICENSE-MACOSFAIRFREE.txt; do
     [ -f "$d/$u" ] || { echo "missing $u in unfairplay module $d" >&2; exit 1; }
     printf '[%s]\n\n' "$u"
@@ -93,7 +85,7 @@ HDR
 Dependencies (every module linked into the binary)
 ================================================================================
 HDR
-  while IFS=$'\t' read -r path version dir _; do
+  while IFS=$'\t' read -r path version dir; do
     case "$path" in github.com/majd/ipatool/v2|github.com/DrWhax/unfairplay) continue ;; esac
     f=""
     if [ -n "$dir" ]; then f="$(license_file "$dir")"; fi

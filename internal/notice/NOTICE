@@ -10,11 +10,6 @@ vphone-apps itself is released under the MIT License (reproduced first below).
 
 Inspired by the darkwirelabs.com article at https://www.darkwirelabs.com/articles/from-app-store-to-virtual-iphone-with-vphone/; it is not a dependency.
 
-unfairplay is built from the fork github.com/securityvoid/unfairplay because
-DrWhax/unfairplay PR #28 (https://github.com/DrWhax/unfairplay/pull/28), which
-exposes its decrypt and setup entry points as importable packages, is not yet
-merged.
-
 ================================================================================
 vphone-apps
 ================================================================================
@@ -75,7 +70,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
---- unfairplay (github.com/DrWhax/unfairplay => github.com/securityvoid/unfairplay) ---
+--- unfairplay (github.com/DrWhax/unfairplay) ---
 Repository: https://github.com/DrWhax/unfairplay
 License: MIT, with Apache-2.0 (DarkPhoenix) and MIT (macOSFairFree) components
 

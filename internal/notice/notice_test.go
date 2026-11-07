@@ -98,7 +98,7 @@ func TestNoticeLicenseAndCredits(t *testing.T) {
 	}
 	n := string(b)
 	hdr := n[:strings.Index(n, "====")] // header: before the vphone-apps block
-	for _, w := range []string{"vphone-apps itself is released under the MIT License", "pull/28", "Inspired by the darkwirelabs.com article at https://www.darkwirelabs.com/articles/from-app-store-to-virtual-iphone-with-vphone/; it is not a dependency."} {
+	for _, w := range []string{"vphone-apps itself is released under the MIT License", "Inspired by the darkwirelabs.com article at https://www.darkwirelabs.com/articles/from-app-store-to-virtual-iphone-with-vphone/; it is not a dependency."} {
 		if !strings.Contains(hdr, w) {
 			t.Errorf("NOTICE header lacks %q", w)
 		}
@@ -120,22 +120,17 @@ func TestNoticeLicenseAndCredits(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	lines := strings.Split(string(mod), "\n")
-	for i, l := range lines {
-		if strings.HasPrefix(l, "replace github.com/DrWhax/unfairplay") {
-			if i == 0 || !strings.HasPrefix(lines[i-1], "//") {
-				t.Error("line before the unfairplay replace must be a // comment")
-				return
-			}
-			c := "" // the contiguous // block above the replace
-			for k := i - 1; k >= 0 && strings.HasPrefix(lines[k], "//"); k-- {
-				c = lines[k] + " " + c
-			}
-			if !(strings.Contains(c, "PR #28") || strings.Contains(c, "pull/28")) || !strings.Contains(c, "fork") {
-				t.Errorf("go.mod comment must mention PR #28 and fork: %q", c)
-			}
-			return
-		}
+	if strings.Contains(strings.ToLower(string(mod)), "replace") {
+		t.Error("go.mod must not contain a replace directive")
 	}
-	t.Error("no unfairplay replace in go.mod")
+	if strings.Contains(n, "pull/28") || strings.Contains(n, "securityvoid/unfairplay") {
+		t.Error("NOTICE must not reference the unfairplay fork")
+	}
+	emb, err := os.ReadFile("NOTICE")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if strings.Contains(string(emb), "pull/28") || strings.Contains(string(emb), "securityvoid/unfairplay") {
+		t.Error("internal/notice/NOTICE must not reference the unfairplay fork")
+	}
 }

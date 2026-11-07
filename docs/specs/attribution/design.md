@@ -17,7 +17,7 @@ go list -deps ─▶ scripts/gen-notice.sh ─▶ NOTICE ─┬─▶ internal/n
 ### NOTICE layout
 | Part | Content |
 |---|---|
-| 1. Header | assembly paragraph; sentence that vphone-apps itself is MIT; inspiration sentence (REQ-ATTR-004); fork sentence (PR #28) |
+| 1. Header | assembly paragraph; sentence that vphone-apps itself is MIT; inspiration sentence (REQ-ATTR-004) |
 | 2. `vphone-apps` block | the `LICENSE` text |
 | 3. Direct upstreams | ipatool, unfairplay (with its own `NOTICE` text, DarkPhoenix Apache-2.0, macOSFairFree MIT), vphone-cli: copyright line, repository URL, full license text |
 | 4. Dependencies | one block per module linked into the binary (the modules of `go list -deps -json ./cmd/vphone-apps`, main module excluded) other than the above: module path, version, license name, license text taken from the module's license file in the module cache |
@@ -39,7 +39,8 @@ go list -deps ─▶ scripts/gen-notice.sh ─▶ NOTICE ─┬─▶ internal/n
 ```
 LICENSE
 NOTICE
-go.mod                       (replace directive removed by TASK-ATTR-007)
+README.md   (credits section names unfairplay without fork wording)
+go.mod
 internal/repo/repo_test.go  (no vendored upstream source)
 scripts/gen-notice.sh
 scripts/licenses/vphone-cli.LICENSE   (committed copy; vphone-cli is not a Go dependency)
@@ -54,10 +55,10 @@ Not applicable: static text.
 
 | Decision | Value | Rationale |
 |---|---|---|
-| NOTICE generation | `scripts/gen-notice.sh` (bash + `go list -deps -json ./cmd/vphone-apps`, which excludes test-only and unused graph modules), output committed. For each module other than the main module (`Main: true`; the `replace` target counts as the unfairplay entry) it reads, in the module directory (`Dir`), the first existing file matching `LICENSE*`, `LICENCE*` or `COPYING*` (case-insensitive); the license name is the first line of that file that matches a known title (`MIT License`, `Apache License`, `BSD`, `ISC`, `Mozilla Public License`) else the file's first line; a module with no such file makes the script exit 1 naming the module. The script uses `set -euo pipefail`, writes to a temp file moved into both locations only after full success, and sorts modules by path | reproducible, reviewable diff |
+| NOTICE generation | `scripts/gen-notice.sh` (bash + `go list -deps -json ./cmd/vphone-apps`, which excludes test-only and unused graph modules), output committed. For each module other than the main module (`Main: true`) it reads, in the module directory (`Dir`), the first existing file matching `LICENSE*`, `LICENCE*` or `COPYING*` (case-insensitive); the license name is the first line of that file that matches a known title (`MIT License`, `Apache License`, `BSD`, `ISC`, `Mozilla Public License`) else the file's first line; a module with no such file makes the script exit 1 naming the module. The script uses `set -euo pipefail`, writes to a temp file moved into both locations only after full success, and sorts modules by path | reproducible, reviewable diff |
 | Embed location | `internal/notice/NOTICE`, a copy written by the script (Go `embed` cannot reach parent directories) | satisfies `embed` rules; test asserts the copy equals the root `NOTICE` |
 | vphone-apps licence | MIT, root `LICENSE`; `gen-notice.sh` states it in the header and emits a `vphone-apps` block with the `LICENSE` text before the direct upstreams (REQ-ATTR-003) | `--licenses` shows it |
 | Inspiration credit | a header paragraph in NOTICE (REQ-ATTR-004) | credit without implying a dependency |
-| Fork note | comment above `replace` in `go.mod`; one header sentence in NOTICE (REQ-ATTR-005) | explains the fork reference |
 | Upstream facts | per the index "Upstream projects" row | one owner |
 | Copied code | none vendored; `store.New` replicates ipatool's wiring and cites `cmd/common.go` in a comment | NFR-ATTR-001 |
+| unfairplay dependency | `go.mod` requires github.com/DrWhax/unfairplay v0.2.1 with no `replace`; the NOTICE header has no fork sentence (REQ-ATTR-005) | consumed from the upstream release |
