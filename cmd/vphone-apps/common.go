@@ -19,6 +19,9 @@ type Store interface {
 	Search(ctx context.Context, term string, limit int) ([]appstore.App, error)
 	Lookup(ctx context.Context, bundleID string) (appstore.App, error)
 	Download(ctx context.Context, app appstore.App, outPath string, purchase bool, externalVersionID string) error
+	SaveCredentials(email, password string) error
+	LoadCredentials() (email, password string, err error)
+	ForgetCredentials() error
 }
 
 // failure is one `error: <step>: <msg>` line plus optional hint lines.
@@ -53,6 +56,7 @@ const loginHint = "run vphone-apps login"
 // deadline d.
 func classify(parent, sctx context.Context, d time.Duration, step string, err error) *failure {
 	var te *store.TimeoutError
+	var rp repeated
 	switch {
 	case errors.Is(err, store.ErrNotLoggedIn):
 		return fail(step, "not logged in").hint(loginHint)
@@ -64,6 +68,8 @@ func classify(parent, sctx context.Context, d time.Duration, step string, err er
 		return fail(step, "timed out after %s", dur.Format(te.D))
 	case parent.Err() != nil:
 		return fail(step, "interrupted")
+	case errors.As(err, &rp):
+		return fail(step, "%s", err.Error())
 	case errors.Is(sctx.Err(), context.DeadlineExceeded):
 		return fail(step, "timed out after %s", dur.Format(d))
 	}

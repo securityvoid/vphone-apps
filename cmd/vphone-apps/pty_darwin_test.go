@@ -110,13 +110,15 @@ func TestLoginPtyNewlineAfterSecret(t *testing.T) {
 		time.Sleep(5 * time.Millisecond)
 	}
 	master.Write([]byte("SENTINEL-PW\n"))
+	time.Sleep(100 * time.Millisecond)
+	master.Write([]byte("n\n"))
 	select {
 	case c := <-code:
 		wantExit(t, c, 0, e)
 	case <-time.After(3 * time.Second):
 		t.Fatal("login did not return")
 	}
-	if got := e.errb.String(); got != "Apple Account email: Apple Account password: \n" {
+	if got := e.errb.String(); got != "Apple Account email: Apple Account password: \nSave credentials to Keychain for reuse? [y/N] " {
 		t.Fatalf("stderr %q", got)
 	}
 }

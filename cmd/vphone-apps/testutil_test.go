@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io"
 	"net"
 	"os"
 	"path/filepath"
@@ -34,6 +35,7 @@ type fakeAS struct {
 	acctErr     error
 	searchRes   []appstore.App
 	searchErr   error
+	searchFn    func(n int) error // when set, answers Search; n counts Search calls so far (1-based)
 	searchLim   int64
 	lookupApp   appstore.App
 	lookupErr   error
@@ -46,6 +48,17 @@ type fakeAS struct {
 }
 
 func (f *fakeAS) rec(s string) { f.mu.Lock(); f.calls = append(f.calls, s); f.mu.Unlock() }
+func (f *fakeAS) searchCalls() int {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	n := 0
+	for _, c := range f.calls {
+		if c == "search" {
+			n++
+		}
+	}
+	return n
+}
 func (f *fakeAS) callList() string {
 	f.mu.Lock()
 	defer f.mu.Unlock()
@@ -68,6 +81,9 @@ func (f *fakeAS) AccountInfo() (appstore.AccountInfoOutput, error) {
 func (f *fakeAS) Search(in appstore.SearchInput) (appstore.SearchOutput, error) {
 	f.rec("search")
 	f.searchLim = in.Limit
+	if f.searchFn != nil {
+		return appstore.SearchOutput{Results: f.searchRes}, f.searchFn(f.searchCalls())
+	}
 	return appstore.SearchOutput{Results: f.searchRes}, f.searchErr
 }
 func (f *fakeAS) Lookup(in appstore.LookupInput) (appstore.LookupOutput, error) {
@@ -115,6 +131,9 @@ func (p *fakePrompt) Line(_ context.Context, prompt string) (string, error) {
 	p.asked = append(p.asked, prompt)
 	if p.err != nil {
 		return "", p.err
+	}
+	if len(p.lines) == 0 {
+		return "", io.EOF // an unanswered question is EOF
 	}
 	s := p.lines[0]
 	p.lines = p.lines[1:]
@@ -212,6 +231,7 @@ type testEnv struct {
 	cache  string // cache base dir
 	models string
 	prompt *fakePrompt
+	ring   *fakeRing
 	steps  []string
 	// store deadlines (zero = default)
 	purchaseTO, downloadTO time.Duration
@@ -229,6 +249,7 @@ func newEnv(t *testing.T, handle func(string) string) *testEnv {
 	e := &testEnv{out: &bytes.Buffer{}, errb: &bytes.Buffer{}}
 	e.run_ = &fakeRunner{}
 	e.exists = map[string]bool{}
+	e.ring = &fakeRing{items: map[string]keyring.Item{}}
 	e.as = &fakeAS{searchRes: []appstore.App{appFoo}, lookupApp: appFoo}
 	e.srv = newServer(t, handle)
 	e.cache = filepath.Join(t.TempDir(), "cache")
@@ -244,11 +265,11 @@ func newEnv(t *testing.T, handle func(string) string) *testEnv {
 	e.a = &app{
 		stdout: e.out, stderr: e.errb, prompt: e.prompt,
 		newStore: func() (Store, error) {
-			s := store.NewWithAppStore(e.as)
+			s := store.NewWithCreds(e.as, e.ring)
 			s.PurchaseTimeout, s.DownloadTimeout = e.purchaseTO, e.downloadTO
 			return s, nil
 		},
-		openStore: func() (Store, error) { return store.NewWithAppStore(e.as), nil },
+		openStore: func() (Store, error) { return store.NewWithCreds(e.as, e.ring), nil },
 		newCache:  func() (*cache.Cache, error) { return cache.NewIn(e.cache) },
 		keep:      (*cache.Cache).Keep,
 		modelDir:  func() (string, error) { return e.models, nil },
@@ -384,3 +405,58 @@ func mkfifo(t *testing.T, path string) {
 }
 
 var keyringNotFound = keyring.ErrKeyNotFound
+
+// fakeRing is an in-memory keyring with injectable errors.
+type fakeRing struct {
+	mu                        sync.Mutex
+	items                     map[string]keyring.Item
+	getErr, setErr, removeErr error
+}
+
+func (r *fakeRing) Get(k string) (keyring.Item, error) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	if r.getErr != nil {
+		return keyring.Item{}, r.getErr
+	}
+	it, ok := r.items[k]
+	if !ok {
+		return keyring.Item{}, keyring.ErrKeyNotFound
+	}
+	return it, nil
+}
+func (r *fakeRing) GetMetadata(string) (keyring.Metadata, error) { return keyring.Metadata{}, nil }
+func (r *fakeRing) Set(it keyring.Item) error {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	if r.setErr != nil {
+		return r.setErr
+	}
+	r.items[it.Key] = it
+	return nil
+}
+func (r *fakeRing) Remove(k string) error {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	if r.removeErr != nil {
+		return r.removeErr
+	}
+	if _, ok := r.items[k]; !ok {
+		return keyring.ErrKeyNotFound
+	}
+	delete(r.items, k)
+	return nil
+}
+func (r *fakeRing) Keys() ([]string, error) { return nil, nil }
+
+// item returns the saved item's JSON ("" when absent).
+func (r *fakeRing) item() string {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	return string(r.items["apple-account"].Data)
+}
+
+// seed stores a raw item.
+func (r *fakeRing) seed(data string) {
+	r.items["apple-account"] = keyring.Item{Key: "apple-account", Data: []byte(data)}
+}

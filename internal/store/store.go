@@ -48,6 +48,7 @@ func (e *TimeoutError) Error() string { return "timed out after " + dur.Format(e
 // mean the defaults (120 s, 30 min); tests and auto-setup set them.
 type Store struct {
 	as              appstore.AppStore
+	creds           keyring.Keyring // saved credentials; nil when the Keychain is unavailable
 	PurchaseTimeout time.Duration
 	DownloadTimeout time.Duration
 }
@@ -87,7 +88,13 @@ func open(dir string, create bool) (*Store, error) {
 	if err != nil {
 		return nil, fmt.Errorf("open keyring: %w", err)
 	}
-	return build(dir, ring)
+	s, err := build(dir, ring)
+	if err != nil {
+		return nil, err
+	}
+	// Without the Keychain only saving credentials is unavailable.
+	_ = s.openCreds(keyring.Open)
+	return s, nil
 }
 
 func build(dir string, ring keychain.Keyring) (*Store, error) {

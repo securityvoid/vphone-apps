@@ -27,6 +27,7 @@ func (a *app) search(ctx context.Context, args []string) int {
 	if err != nil {
 		return a.report(fail("search", "%s", err.Error()))
 	}
+	st = a.withRelogin(ctx, st, a.to.Search)
 	var results []appstore.App
 	if f := bounded(ctx, a.to.Search, "search", func(c context.Context) (err error) {
 		results, err = st.Search(c, term, searchLimit)

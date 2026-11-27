@@ -18,7 +18,7 @@ func TestLoginSuccessPromptsOnlyAndNoStdout(t *testing.T) {
 	if e.out.Len() != 0 || e.errb.Len() != 0 {
 		t.Fatalf("out=%q err=%q", e.out, e.errb)
 	}
-	if fmt.Sprint(e.prompt.asked) != "[Apple Account email:  Apple Account password: ]" {
+	if fmt.Sprint(e.prompt.asked) != "[Apple Account email:  Apple Account password:  Save credentials to Keychain for reuse? [y/N] ]" {
 		t.Fatalf("%q", e.prompt.asked)
 	}
 }
@@ -38,7 +38,7 @@ func TestLoginTwoFactorReprompt(t *testing.T) {
 		return nil
 	}
 	wantExit(t, e.run("login"), 0, e)
-	if n != 2 || e.prompt.asked[len(e.prompt.asked)-1] != "Apple 2FA code: " {
+	if n != 2 || e.prompt.asked[len(e.prompt.asked)-2] != "Apple 2FA code: " {
 		t.Fatal(n, e.prompt.asked)
 	}
 }

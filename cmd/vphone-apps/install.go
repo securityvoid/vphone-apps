@@ -107,6 +107,7 @@ func (a *app) run(ctx context.Context, o *installOpts) (*cache.Cache, *failure) 
 	if err != nil {
 		return c, fail("select", "%s", err.Error())
 	}
+	st = a.withRelogin(ctx, st, a.to.Select)
 
 	// 2. Select.
 	app, f := a.selectApp(ctx, st, o)
